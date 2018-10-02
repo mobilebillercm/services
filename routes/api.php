@@ -17,11 +17,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('services', 'ApiController@createService');
-Route::get('services', 'ApiController@getAllService');
-Route::get('services/{id}', 'ApiController@getServiceByBidOrByName');
-Route::put('services/{id}', 'ApiController@updateService');
-Route::delete('services/{id}', 'ApiController@deleteService');
-Route::get('services/{id}/icon', 'ApiController@getIcon');
-Route::put('services/{id}/active', 'ApiController@activateOrDeactivateService');
+Route::post('services', 'ApiController@createService')->middleware('token.verification');
+Route::get('services', 'ApiController@getAllService')->middleware('token.verification');
+Route::get('services/{id}', 'ApiController@getServiceByBidOrByName')->middleware('token.verification');
+Route::put('services/{id}', 'ApiController@updateService')->middleware('token.verification');
+Route::delete('services/{id}', 'ApiController@deleteService')->middleware('token.verification');
+Route::get('services/{id}/icon', 'ApiController@getIcon')->middleware('token.verification');
+Route::put('services/{id}/active', 'ApiController@activateOrDeactivateService')->middleware('token.verification');
 

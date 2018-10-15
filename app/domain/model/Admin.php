@@ -15,11 +15,12 @@ class Admin extends  Model
 {
 
     protected $table = 'admins';
-    protected $fillable = ['b_id', 'firstname', 'lastname', 'email', 'created_at', 'updated_at'];
+    protected $fillable = ['b_id','tenant', 'firstname', 'lastname', 'email', 'created_at', 'updated_at'];
 
-    public function __construct($b_id = null, $firstname = null, $lastname = null, $email = null, array $attributes = []){
+    public function __construct($b_id = null, $tenant = null, $firstname = null, $lastname = null, $email = null, array $attributes = []){
         parent::__construct($attributes);
         $this->b_id = $b_id;
+        $this->tenant = $tenant;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
         $this->email = $email;

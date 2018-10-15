@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\domain\model\Admin;
 use App\domain\model\Service;
+use App\Jobs\ProcessMessages;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +12,33 @@ use Webpatser\Uuid\Uuid;
 
 class ApiController extends Controller
 {
+
+
+    public function createAdmin(){
+
+        $userJsonString = file_get_contents("php://input");
+        $userArray = json_decode($userJsonString, true);
+
+        $validator = Validator::make($userArray, [
+            'userid'=> 'required|string|min:1|max:250',
+            'tenantid'=> 'required|string|min:1|max:250',
+            'firstname'=> 'required|string|min:1',
+            'lastname'=> 'required|string|min:1',
+            'email'=> 'required|string|email|min:1|max:150',
+        ]);
+
+        if ($validator->fails()){
+
+            return response(array('success'=>0, 'faillure' => 1, 'raison' => $validator->errors()->first()), 200);
+        }
+
+        $admin = new Admin($userArray['userid'], $userArray['tenantid'], $userArray['firstname'], $userArray['lastname'], $userArray['email']);
+
+        $admin->save();
+
+        return response(array('success'=>1, 'faillure' => 0, 'response' => "User Saved Successfully"), 200);
+    }
+
     public function createService(Request $request){
 
         //$inputContent = file_get_contents("php://input");
@@ -44,6 +73,9 @@ class ApiController extends Controller
         $validite = $service->isInsertable();
         if ($validite[0]){
             $service->save();
+
+            ProcessMessages::dispatch(env('SERVICE_CREATED_EXCHANGE'), env('RABBIT_MQ_EXCHANGE_TYPE'), json_encode($service));
+
             return  response(array('success'=>1, 'faillure' => 0, 'response' => "Service cree avec succes"), 200);
         }else{
             if (!($pathicon === null)){
@@ -52,7 +84,6 @@ class ApiController extends Controller
             return response(array('success'=>0, 'faillure' => 1, 'raison' => $validite[1]), 200);
         }
     }
-
 
     public function getAllService(Request $request){
 
@@ -159,8 +190,6 @@ class ApiController extends Controller
 
     }
 
-
-
     public function activateOrDeactivateService(Request $request, $bidOrName){
         $services = Service::where('b_id', '=', $bidOrName)->orWhere('name', '=', $bidOrName)->get();
         if (!(count($services) === 1)){
@@ -186,5 +215,7 @@ class ApiController extends Controller
         return response(array('success'=>1, 'faillure' => 0, 'response' => 'Service Ajourne avec succes'), 200);
 
     }
+
+
 
 }

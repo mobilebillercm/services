@@ -29,14 +29,14 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 
     $channel->exchange_declare(
-        parse_ini_file("global-var-config.ini", true)['EXCHANGES']['REGISTERED_USERS_EXCHANGE'],
+        parse_ini_file("global-var-config.ini", true)['EXCHANGES']['TENANT_PROVISIONED_EXCHANGE'],
         'fanout',
         false,
         true,
         false);
 
     list($queue_name, ,) = $channel->queue_declare(
-        parse_ini_file("global-var-config.ini", true)['QUEUES']['SERVICES_USER_REGISTERED_QUEUE'],
+        parse_ini_file("global-var-config.ini", true)['QUEUES']['SERVICES_TENANT_PROVISIONED_QUEUE'],
         false,
         true,
         false,
@@ -44,7 +44,7 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
 
     $channel->queue_bind(
         $queue_name,
-        parse_ini_file("global-var-config.ini", true)['EXCHANGES']['REGISTERED_USERS_EXCHANGE']
+        parse_ini_file("global-var-config.ini", true)['EXCHANGES']['TENANT_PROVISIONED_EXCHANGE']
     );
 
     echo " [*] Waiting for registered user to exit press CTRL+C\n";
@@ -90,16 +90,19 @@ use PhpAmqpLib\Connection\AMQPStreamConnection;
             $data = json_decode($msg->body);
 
 
-            echo $msg->body . "\n\n\n";
+            $adminuser = $data->adminuser;
+
+
 
             $res = $client->post($url, [
                 'headers' => [
                     'Authorization' => $token->access_token,
                 ],
-                'body' => json_encode($data)
+                'body' => json_encode($adminuser)
             ]);
 
             echo $res->getBody();
+
 
 
         } catch (BadResponseException $e) {

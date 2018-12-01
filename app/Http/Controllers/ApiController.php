@@ -41,8 +41,10 @@ class ApiController extends Controller
 
     public function createService(Request $request){
 
-        //$inputContent = file_get_contents("php://input");
-        //$data = json_decode($inputContent, true);
+
+        //return $request->all();
+
+
         $validator = Validator::make($request->all(), [
             'name'=> 'required|string|min:1|max:250',
             'description'=> 'required|string|min:1',
@@ -60,6 +62,8 @@ class ApiController extends Controller
 
             return response(array('success'=>0, 'faillure' => 1, 'raison' => $validator->errors()->first()), 200);
         }
+
+
 
         $icon = $request->file('icon');
 

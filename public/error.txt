@@ -1,0 +1,6 @@
+Client error: `POST http://localhost/mobilebiller/ide/public/api/confirm-access-token` resulted in a `404 Not Found` response:
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found (truncated...)

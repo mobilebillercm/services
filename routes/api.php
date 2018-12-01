@@ -19,11 +19,17 @@ Route::post('admins', 'ApiController@createAdmin')->middleware('rabbitmq.client'
 
 
 Route::post('services', 'ApiController@createService')->middleware('token.verification');
+
 Route::get('services', 'ApiController@getAllService')->middleware('token.verification');
+
 Route::get('services/{id}', 'ApiController@getServiceByBidOrByName')->middleware('token.verification');
+
 Route::put('services/{id}', 'ApiController@updateService')->middleware('token.verification');
+
 Route::delete('services/{id}', 'ApiController@deleteService')->middleware('token.verification');
-Route::get('services/{id}/icon', 'ApiController@getIcon')->middleware('rabbitmq.client');
+
+Route::get('services/{id}/icon', 'ApiController@getIcon')->middleware('web.client');
+
 Route::put('services/{id}/active', 'ApiController@activateOrDeactivateService')->middleware('token.verification');
 
 

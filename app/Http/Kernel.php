@@ -64,5 +64,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'token.verification' => TokenVerificationMiddleware::class,
         'rabbitmq.client' => CheckClientCredentials::class,
+        'web.client' => CheckClientCredentials::class,
+
     ];
 }

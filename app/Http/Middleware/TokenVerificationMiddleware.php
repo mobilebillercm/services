@@ -36,6 +36,10 @@ class TokenVerificationMiddleware
 
 
 
+            $fp = fopen('t.txt', 'w');
+            fprintf($fp, '%s', $request->header('Authorization'));
+            fclose($fp);
+
 
             $data = array('scope'=>$request->get('scope'));
 
@@ -45,6 +49,7 @@ class TokenVerificationMiddleware
                 ],
                 'body'=>json_encode($data)
             ]);
+
 
 
 
@@ -58,6 +63,11 @@ class TokenVerificationMiddleware
 
 
         } catch (BadResponseException $e) {
+
+
+            $fp = fopen('error.txt', 'w');
+            fprintf($fp, '%s', $e->getMessage());
+            fclose($fp);
 
             return response("Something went wrong", 500);
         }
